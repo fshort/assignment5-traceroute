@@ -54,7 +54,7 @@ def build_packet(ID):
     # struct -- Interpret strings as packed binary data
     header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
     now = time.time()
-    print("s:" + str(now))
+    #print("s:" + str(now))
     data = struct.pack("d", now)
     # Calculate the checksum on the data and the dummy header.
     myChecksum = checksum(header + data)
@@ -117,7 +117,7 @@ def get_route(hostname):
                 hopHostIP = addr[0]
 
                 timeReceived = time.time()
-                print("r:" + str(timeReceived))
+                #print("r:" + str(timeReceived))
                 timeLeft = timeLeft - howLongInSelect
                 if timeLeft <= 0:
                     #Fill in start
@@ -150,7 +150,7 @@ def get_route(hostname):
                     #Fill in end
 
                 if types == 11:
-                    print("type11")
+                    #print("type11")
                     bytes = struct.calcsize("d")
                     timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
                     #Fill in start
@@ -162,14 +162,14 @@ def get_route(hostname):
                     #calc rtt
                     #rtt = round(((timeReceived - t)/1000),7)
                     rtt = round(((timeReceived - t)*1000),2)
-                    tracelist1.append(rtt)
+                    tracelist1.append(str(rtt))
                     tracelist1.append(hopHostIP)
                     tracelist1.append(hopHostName)
 
                     tracelist2.append(tracelist1)
                     #Fill in end
                 elif types == 3:
-                    print("type3")
+                    #print("type3")
                     bytes = struct.calcsize("d")
                     timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
                     #Fill in start
@@ -180,14 +180,14 @@ def get_route(hostname):
 
                     #calc rtt
                     rtt = round(((timeReceived - t)*1000),2)
-                    tracelist1.append(rtt)
+                    tracelist1.append(str(rtt))
                     tracelist1.append(hopHostIP)
                     tracelist1.append(hopHostName)
 
                     tracelist2.append(tracelist1)
                     #Fill in end
                 elif types == 0:
-                    print("type0")
+                    #print("type0")
                     bytes = struct.calcsize("d")
                     timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
                     #Fill in start
@@ -198,17 +198,22 @@ def get_route(hostname):
 
                     #calc rtt
                     rtt = round(((timeReceived - t)*1000),2)
-                    tracelist1.append(rtt)
+                    tracelist1.append(str(rtt))
                     tracelist1.append(hopHostIP)
                     tracelist1.append(hopHostName)
 
                     tracelist2.append(tracelist1)
                     #Fill in end
                 else:
-                    print("error: " + str(types))
+                    #print("error: " + str(types))
                     #Fill in start
                     #If there is an exception/error to your if statements, you should append that to your list here
-                    tracelist1.append(timeSent)
+                    tracelist1.append(str(ttl))
+                    tracelist1.append("*")
+                    tracelist1.append("*")
+                    tracelist1.append("*")
+
+                    tracelist2.append(tracelist1)
                     
                     #Fill in end
                 break
@@ -221,8 +226,5 @@ if __name__ == '__main__':
     dest = "google.com"
     traces = get_route(dest)
     print("traceroute to " + str(dest))
-    try:
-        for i in range(len(traces)):
-            print(str(traces[i][0]) + "\t" + str(traces[i][1]) + "ms" + "\t" + traces[i][2] + "\t" + traces[i][3])
-    except IndexError:
-        print(traces[i])
+    for i in range(len(traces)):
+        print(traces[i][0] + "\t" + traces[i][1] + "ms" + "\t" + traces[i][2] + "\t" + traces[i][3])
